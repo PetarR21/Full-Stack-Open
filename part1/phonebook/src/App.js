@@ -4,12 +4,14 @@ import personsService from './services/persons';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
+import Notification from './components/Notification';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     personsService.getAll().then((initialPersons) => setPersons(initialPersons));
@@ -35,9 +37,10 @@ const App = () => {
             );
             setNewName('');
             setNewNumber('');
+            notify(`Updated ${returnedPerson.name}`, 'success');
           })
           .catch((error) => {
-            alert(`The person '${person.name}' was already deleted from server`);
+            notify(`The person '${person.name}' was already deleted from server`, 'error');
             setPersons(persons.filter((person) => person.id !== person.id));
           });
       }
@@ -53,6 +56,7 @@ const App = () => {
       setPersons(persons.concat(returnedPerson));
       setNewName('');
       setNewNumber('');
+      notify(`Added ${returnedPerson.name}`, 'success');
     });
   };
 
@@ -63,12 +67,20 @@ const App = () => {
         .remove(id)
         .then(() => {
           setPersons(persons.filter((person) => person.id !== id));
+          notify(`Deleted ${person.name}`, 'success');
         })
         .catch((error) => {
-          alert(`The person '${person.name}' was already deleted from server`);
+          notify(`The person '${person.name}' was already deleted from server`, 'error');
           setPersons(persons.filter((person) => person.id !== id));
         });
     }
+  };
+
+  const notify = (message, type) => {
+    setNotification({ message, type });
+    setTimeout(() => {
+      setNotification(null);
+    }, 4000);
   };
 
   const filteredPersons = persons.filter(
@@ -79,6 +91,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={notification} />
       <Filter filter={filter} setFilter={setFilter} />
 
       <h3>Add a new</h3>

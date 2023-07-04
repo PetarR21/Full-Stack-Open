@@ -24,11 +24,6 @@
       "content": "POST is used to create new notes",
       "important": true,
       "id": 5
-    },
-    {
-      "content": "hello world",
-      "important": true,
-      "id": 6
     }
   ]
 }
