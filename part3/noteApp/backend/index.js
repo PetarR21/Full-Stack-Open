@@ -3,6 +3,18 @@ const app = express();
 
 app.use(express.json());
 
+const requestLogger = (request, response, next) => {
+  console.log('Method:', request.method);
+  console.log('Path:  ', request.path);
+  console.log('Body:  ', request.body);
+  console.log('---');
+  next();
+};
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' });
+};
+
 let notes = [
   {
     id: 1,
@@ -20,6 +32,8 @@ let notes = [
     important: true,
   },
 ];
+
+app.use(requestLogger);
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>');
@@ -39,21 +53,22 @@ app.get('/api/notes/:id', (request, response) => {
 });
 
 app.post('/api/notes', (request, response) => {
-  const body = request.body;
-  if (!body.content) {
+  const note = request.body;
+  if (!note || !note.content) {
     return response.status(400).json({
-      error: 'content missing',
+      error: 'note.content is missing',
     });
   }
-
+  const ids = notes.map((note) => note.id);
+  const maxId = Math.max(...ids);
   const newNote = {
-    content: body.content,
-    important: body.important || false,
-    id: Math.floor(Math.random() * 10000000),
+    id: maxId + 1,
+    content: note.content,
+    important: typeof note.important !== 'undefined' ? note.important : false,
+    date: new Date().toISOString(),
   };
-
-  notes = notes.concat(newNote);
-  response.json(newNote);
+  notes = [...notes, newNote];
+  response.status(201).json(newNote);
 });
 
 app.delete('/api/notes/:id', (request, response) => {
@@ -65,6 +80,8 @@ app.delete('/api/notes/:id', (request, response) => {
   }
   return response.status(404).end();
 });
+
+app.use(unknownEndpoint);
 
 const PORT = 3001;
 app.listen(PORT, () => {
