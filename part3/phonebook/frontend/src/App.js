@@ -40,8 +40,7 @@ const App = () => {
             notify(`Updated ${returnedPerson.name}`, 'success');
           })
           .catch((error) => {
-            notify(`The person '${person.name}' was already deleted from server`, 'error');
-            setPersons(persons.filter((person) => person.id !== person.id));
+            notify(error.response.data.error, 'error');
           });
       }
       return;
@@ -52,12 +51,17 @@ const App = () => {
       number: newNumber,
       id: persons.length + 1,
     };
-    personsService.create(personObject).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson));
-      setNewName('');
-      setNewNumber('');
-      notify(`Added ${returnedPerson.name}`, 'success');
-    });
+    personsService
+      .create(personObject)
+      .then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+        setNewName('');
+        setNewNumber('');
+        notify(`Added ${returnedPerson.name}`, 'success');
+      })
+      .catch((error) => {
+        notify(error.response.data.error, 'error');
+      });
   };
 
   const removePerson = (id) => {
