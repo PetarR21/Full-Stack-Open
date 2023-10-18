@@ -1,30 +1,32 @@
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 const initialBlogs = [
   {
-    title: 'Blog1',
-    author: 'Author1',
-    url: 'Url1',
-    likes: 1,
+    title: 'Canonical string reduction',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+    likes: 12,
   },
   {
-    title: 'Blog2',
-    author: 'Author2',
-    url: 'Url2',
-    likes: 2,
+    title: 'First class tests',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+    likes: 10,
   },
 ];
 
+const initialUsers = [{ username: 'tester', password: 'secret' }];
+
 const nonExistingId = async () => {
   const blog = new Blog({
-    content: 'toberemoved',
-    author: 'toberemoved',
-    url: 'toberemoved',
-    likes: 0,
+    title: 'willremovesoon',
+    author: 'willremovesoon',
+    url: 'willremovesoon',
   });
 
   await blog.save();
-  await blog.deleteOne();
+  await blog.remove();
 
   return blog._id.toString();
 };
@@ -34,8 +36,15 @@ const blogsInDb = async () => {
   return blogs.map((b) => b.toJSON());
 };
 
+const usersInDb = async () => {
+  const users = await User.find({});
+  return users.map((u) => u.toJSON());
+};
+
 module.exports = {
   initialBlogs,
+  initialUsers,
   nonExistingId,
   blogsInDb,
+  usersInDb,
 };
