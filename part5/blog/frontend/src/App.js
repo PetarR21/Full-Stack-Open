@@ -103,7 +103,7 @@ const App = () => {
 
   const addBlog = async (blogObject) => {
     try {
-      const newBlog = await blogService.create(blogObject);
+      const newBlog = await blogService.create({ blogObject });
       setBlogs(blogs.concat(newBlog));
       showNotification({
         type: 'success',

@@ -13,11 +13,12 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
           {showDetails ? 'hide' : 'view'}
         </button>
       </div>
-      <div style={showWhenVisible}>
-        <div> {blog.url}</div>
+      <div style={showWhenVisible} className='blogDetails'>
+        <div>{blog.url}</div>
         <div>
           {blog.likes !== 1 ? 'likes' : 'like'} {blog.likes}{' '}
           <button
+            className='likeBtn'
             onClick={() => {
               likeBlog(blog);
             }}
