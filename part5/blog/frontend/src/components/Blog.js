@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-const Blog = ({ blog, likeBlog, removeBlog }) => {
+const Blog = ({ user, blog, likeBlog, removeBlog }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   const showWhenVisible = { display: showDetails ? '' : 'none' };
-
+  console.log(blog);
   return (
     <div className='blog'>
       <div>
@@ -27,13 +27,17 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
           </button>
         </div>
         <div>{blog.user.name}</div>
-        <button
-          onClick={() => {
-            removeBlog(blog);
-          }}
-        >
-          remove
-        </button>
+        {user.username === blog.user.username ? (
+          <button
+            onClick={() => {
+              removeBlog(blog);
+            }}
+          >
+            remove
+          </button>
+        ) : (
+          ''
+        )}
       </div>
     </div>
   );
