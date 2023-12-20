@@ -1,7 +1,5 @@
 const router = require('express').Router();
 const Blog = require('../models/blog');
-const User = require('../models/user');
-const jwt = require('jsonwebtoken');
 const middleware = require('../utils/middleware');
 
 router.get('/', async (request, response) => {
