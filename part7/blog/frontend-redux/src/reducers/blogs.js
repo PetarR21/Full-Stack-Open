@@ -84,7 +84,7 @@ export const likeBlog = (blog) => {
       dispatch(
         setNotification(
           {
-            message: `Blog '${blog.title}' by '${blog.author}' deleted successfully`,
+            message: `Blog '${blog.title}' by '${blog.author}' liked successfully`,
             type: 'success',
           },
           5

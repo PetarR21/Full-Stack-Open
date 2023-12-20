@@ -1,48 +1,51 @@
-import { useState, forwardRef, useImperativeHandle } from 'react';
+import { useDispatch } from 'react-redux';
+import { useField } from '../hooks';
+import { setNotification } from '../reducers/notification';
+import { setUser } from '../reducers/user';
+import loginService from '../services/login';
+import blogsService from '../services/blogs';
+import Notification from './Notification';
 
-const LoginForm = forwardRef(({ onLogin }, refs) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+const LoginForm = () => {
+  const username = useField('text');
+  const password = useField('password');
 
-  const handleLogin = (event) => {
-    event.preventDefault();
-    onLogin({ username, password });
+  const dispatch = useDispatch();
+
+  const clear = () => {
+    username.reset();
+    password.reset();
   };
 
-  useImperativeHandle(refs, () => {
-    return {
-      setUsername,
-      setPassword,
-    };
-  });
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    try {
+      const user = await loginService.login({ username: username.value, password: password.value });
+      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user));
+      blogsService.setToken(user.token);
+      dispatch(setUser(user));
+      clear();
+    } catch (error) {
+      console.log(error);
+      dispatch(setNotification({ message: 'wrong username or password', type: 'error' }, 5));
+    }
+  };
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        username{' '}
-        <input
-          type='text'
-          name='Username'
-          value={username}
-          onChange={({ target }) => {
-            setUsername(target.value);
-          }}
-        />
-      </div>
-      <div>
-        password{' '}
-        <input
-          type='password'
-          name='Password'
-          value={password}
-          onChange={({ target }) => {
-            setPassword(target.value);
-          }}
-        />
-      </div>
-      <button type='submit'>login</button>
-    </form>
+    <div>
+      <h2>log in to application</h2>
+      <Notification />
+      <form onSubmit={handleLogin}>
+        <div>
+          username <input {...username.data} />
+        </div>
+        <div>
+          password <input {...password.data} />
+        </div>
+        <button type='submit'>login</button>
+      </form>
+    </div>
   );
-});
+};
 
 export default LoginForm;
