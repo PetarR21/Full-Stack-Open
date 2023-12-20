@@ -1,49 +1,54 @@
-import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { createBlog } from '../reducers/blogs';
+import { useField } from '../hooks';
+import { useRef } from 'react';
+import Togglable from './Togglable';
 
-const BlogForm = ({ createBlog }) => {
-  const [title, setTitle] = useState();
-  const [author, setAuthor] = useState();
-  const [url, setUrl] = useState();
+const BlogForm = () => {
+  const title = useField('text');
+  const author = useField('text');
+  const url = useField('text');
+
+  const dispatch = useDispatch();
+
+  const clear = () => {
+    title.reset();
+    author.reset();
+    url.reset();
+  };
+
+  const hide = () => {
+    blogFormRef.current.toggleVisibility();
+  };
 
   const addBlog = (event) => {
     event.preventDefault();
     const blogObject = {
-      title: title,
-      author: author,
-      url: url,
+      title: title.value,
+      author: author.value,
+      url: url.value,
     };
-    createBlog(blogObject);
-    setTitle('');
-    setAuthor('');
-    setUrl('');
+    dispatch(createBlog(blogObject, clear,hide));
   };
 
+  const blogFormRef = useRef();
+
   return (
-    <div>
+    <Togglable buttonLabel='add blog' ref={blogFormRef}>
       <h2>create new</h2>
       <form onSubmit={addBlog}>
         title:
-        <input
-          type='text'
-          name='title'
-          value={title}
-          onChange={({ target }) => setTitle(target.value)}
-        />
+        <input {...title.data} />
         <br />
         author:
-        <input
-          type='text'
-          name='author'
-          value={author}
-          onChange={({ target }) => setAuthor(target.value)}
-        />
+        <input {...author.data} />
         <br />
         url:
-        <input type='text' name='url' value={url} onChange={({ target }) => setUrl(target.value)} />
+        <input {...url.data} />
         <br />
         <button type='submit'>create</button>
       </form>
-    </div>
+    </Togglable>
   );
 };
 

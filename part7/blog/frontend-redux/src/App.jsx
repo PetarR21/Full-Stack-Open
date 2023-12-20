@@ -1,24 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
-import Blog from './components/Blog';
 import Notification from './components/Notification';
 import blogService from './services/blogs';
 import loginService from './services/login';
-import Togglable from './components/Togglable';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
-import { useSelector, useDispatch } from 'react-redux';
-import { initializeBlogs } from './reducers/blogs';
+import BlogList from './components/BlogList';
 
 const App = () => {
-  const dispatch = useDispatch();
-  const blogs = useSelector(({ blogs }) => [...blogs].sort((a, b) => b.likes - a.likes));
-
-  useEffect(() => {
-    dispatch(initializeBlogs());
-  }, []);
-
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
@@ -49,46 +38,10 @@ const App = () => {
   const loginForm = () => (
     <div>
       <h2>log in to application</h2>
-      <Notification notification={notification} />
+      <Notification />
       <LoginForm onLogin={handleLogin} ref={loginFormRef} />
     </div>
   );
-
-  const blogFormRef = useRef();
-
-  const addBlog = (blogObject) => {
-    blogService
-      .create(blogObject)
-      .then((returnedBlog) => {
-        setBlogs(blogs.concat(returnedBlog));
-        showNotification(
-          `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-          'success'
-        );
-        blogFormRef.current.toggleVisibility();
-      })
-      .catch((error) => {
-        showNotification(error.message, 'error');
-      });
-  };
-
-  const blogForm = () => (
-    <Togglable buttonLabel='add blog' ref={blogFormRef}>
-      <BlogForm createBlog={addBlog} />
-    </Togglable>
-  );
-
-  const likeBlog = (blog) => {
-    blogService
-      .update(blog.id, { likes: blog.likes + 1 })
-      .then((updatedBlog) => {
-        setBlogs(blogs.map((b) => (b.id === updatedBlog.id.toString() ? updatedBlog : b)));
-        showNotification(`liked blog ${updatedBlog.title} by ${updatedBlog.author}`, 'success');
-      })
-      .catch((error) => {
-        showNotification(error.message, 'error');
-      });
-  };
 
   const removeBlog = (blog) => {
     if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
@@ -104,21 +57,6 @@ const App = () => {
     }
   };
 
-  const blogList = () => (
-    <div>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} likeBlog={likeBlog} removeBlog={removeBlog} />
-      ))}
-    </div>
-  );
-
-  const showNotification = (message, type) => {
-    setNotification({ message, type });
-    setTimeout(() => {
-      setNotification(null);
-    }, 4000);
-  };
-
   return (
     <div>
       {user === null ? (
@@ -126,7 +64,7 @@ const App = () => {
       ) : (
         <div>
           <h2>blogs</h2>
-          <Notification notification={notification} />
+          <Notification />
           <p>
             {user.name} logged in{' '}
             <button
@@ -138,7 +76,7 @@ const App = () => {
               log out
             </button>
           </p>
-          {blogForm()} {blogList()}
+          {<BlogForm />} {<BlogList />}
         </div>
       )}
     </div>

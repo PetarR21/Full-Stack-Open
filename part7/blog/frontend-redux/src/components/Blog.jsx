@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { deleteBlog, likeBlog } from '../reducers/blogs';
 
-const Blog = ({ blog, likeBlog,removeBlog }) => {
+const Blog = ({ blog }) => {
+  const dispatch = useDispatch();
   const [view, setView] = useState(false);
 
   const toggleView = () => {
@@ -9,6 +12,16 @@ const Blog = ({ blog, likeBlog,removeBlog }) => {
 
   const showWhenView = { display: view ? '' : 'none' };
 
+  const removeBlog = () => {
+    if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
+      dispatch(deleteBlog(blog));
+    }
+  };
+
+  const likeBlogFor = () => {
+    dispatch(likeBlog(blog));
+  };
+
   return (
     <div className='blog'>
       {blog.title} {blog.author} <button onClick={toggleView}>{view ? 'hide' : 'view'}</button>
@@ -16,16 +29,10 @@ const Blog = ({ blog, likeBlog,removeBlog }) => {
         <div>{blog.url}</div>
         <div>
           {blog.likes === 1 ? 'like' : 'likes'} {blog.likes}{' '}
-          <button
-            onClick={() => {
-              likeBlog(blog);
-            }}
-          >
-            like
-          </button>
+          <button onClick={likeBlogFor}>like</button>
         </div>
         <div>{blog.user.name}</div>
-        <button onClick={()=>{removeBlog(blog)}}>remove</button>
+        <button onClick={removeBlog}>remove</button>
       </div>
     </div>
   );
