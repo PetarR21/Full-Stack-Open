@@ -1,10 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { setUser } from '../reducers/user';
-import blogsService from '../services/blogs';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router';
 
 const User = () => {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+  const id = useParams().id;
+  const user = useSelector(({ users }) => users.find((user) => user.id === id));
 
   if (!user) {
     return null;
@@ -12,18 +12,13 @@ const User = () => {
 
   return (
     <div>
-      <p>
-        {user.name} logged in{' '}
-        <button
-          onClick={() => {
-            dispatch(setUser(null));
-            blogsService.setToken(null);
-            window.localStorage.clear();
-          }}
-        >
-          log out
-        </button>
-      </p>
+      <h3>{user.name}</h3>
+      <h4>added blogs</h4>
+      <ul>
+        {user.blogs.map((blog) => (
+          <li key={blog.id}>{blog.title}</li>
+        ))}
+      </ul>
     </div>
   );
 };

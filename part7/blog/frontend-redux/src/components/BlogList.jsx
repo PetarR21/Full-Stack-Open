@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { initializeBlogs } from '../reducers/blogs';
-import Blog from './Blog';
+import { Link } from 'react-router-dom';
 
 const BlogList = () => {
   const dispatch = useDispatch();
@@ -14,7 +14,9 @@ const BlogList = () => {
   return (
     <div>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <div className='blog' key={blog.id}>
+          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+        </div>
       ))}
     </div>
   );

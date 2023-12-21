@@ -4,6 +4,7 @@ const middleware = require('../utils/middleware');
 
 router.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
+  console.log(blogs);
   response.json(blogs);
 });
 
@@ -16,6 +17,7 @@ router.post('/', middleware.userExtractor, async (request, response) => {
     author,
     url,
     likes: 0,
+    comments: [],
     user: user._id,
   });
 
@@ -62,4 +64,19 @@ router.put('/:id', async (request, response) => {
     response.sendStatus(404);
   }
 });
+
+router.post('/:id/comments', async (request, response) => {
+  const { comment } = request.body;
+  const id = request.params.id;
+  const blogToComment = await Blog.findById(id);
+
+  if (!blogToComment) {
+    response.sendStatus(404);
+  } else {
+    blogToComment.comments.push(comment);
+    const savedBlog = await blogToComment.save();
+    response.status(201).json(savedBlog);
+  }
+});
+
 module.exports = router;

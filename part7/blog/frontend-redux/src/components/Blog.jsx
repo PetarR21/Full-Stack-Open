@@ -1,38 +1,52 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { deleteBlog, likeBlog } from '../reducers/blogs';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router';
+import { useField } from '../hooks';
+import { commentBlog, initializeBlogs } from '../reducers/blogs';
+import { useEffect } from 'react';
 
-const Blog = ({ blog }) => {
+const Blog = () => {
   const dispatch = useDispatch();
-  const [view, setView] = useState(false);
 
-  const toggleView = () => {
-    setView(!view);
-  };
+  useEffect(() => {
+    dispatch(initializeBlogs());
+  }, []);
 
-  const showWhenView = { display: view ? '' : 'none' };
+  const id = useParams().id;
+  const blog = useSelector(({ blogs }) => blogs.find((blog) => blog.id === id));
+  const comment = useField('text');
 
-  const removeBlog = () => {
-    if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
-      dispatch(deleteBlog(blog));
-    }
-  };
+  if (!blog) {
+    return null;
+  }
 
-  const likeBlogFor = () => {
-    dispatch(likeBlog(blog));
+  const addComment = (event) => {
+    event.preventDefault();
+    dispatch(commentBlog(blog, comment.value, comment.reset));
   };
 
   return (
-    <div className='blog'>
-      {blog.title} {blog.author} <button onClick={toggleView}>{view ? 'hide' : 'view'}</button>
-      <div style={showWhenView}>
-        <div>{blog.url}</div>
-        <div>
-          {blog.likes === 1 ? 'like' : 'likes'} {blog.likes}{' '}
-          <button onClick={likeBlogFor}>like</button>
+    <div>
+      <h3>{blog.title}</h3>
+      <div>
+        <a href={blog.url} target='blank'>
+          {blog.url}
+        </a>
+      </div>
+      <div>
+        {blog.likes} {blog.likes === 1 ? 'like' : 'likes'}
+      </div>
+      <div>added by {blog.user.name}</div>
+      <div>
+        <h4>comments</h4>
+        <form onSubmit={addComment}>
+          <input {...comment.data} />
+          <button type='submit'>add comment</button>
+        </form>
+        <div className='comments'>
+          {blog.comments.map((comment) => (
+            <li key={comment}>{comment}</li>
+          ))}
         </div>
-        <div>{blog.user.name}</div>
-        <button onClick={removeBlog}>remove</button>
       </div>
     </div>
   );

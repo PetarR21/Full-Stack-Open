@@ -21,3 +21,20 @@
   border: 1px solid;
   margin-bottom: 5px;
 }
+
+td {
+  padding-right: 15px;
+}
+
+.menu {
+  padding: 10px 5px;
+  background-color: lightgray;
+}
+
+.menuItem {
+  margin-right: 10px;
+}
+
+.comments {
+  margin-top: 20px;
+}

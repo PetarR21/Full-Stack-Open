@@ -96,4 +96,27 @@ export const likeBlog = (blog) => {
   };
 };
 
+export const commentBlog = (blog, comment, reset) => {
+  return async (dispatch) => {
+    try {
+      const updatedBlog = await blogService.update(blog.id, {
+        comments: [...blog.comments, comment],
+      });
+      dispatch(updateBlog(updatedBlog));
+      dispatch(
+        setNotification(
+          {
+            message: `Blog '${blog.title}' by '${blog.author}' successfully commented`,
+            type: 'success',
+          },
+          5
+        )
+      );
+      reset();
+    } catch (error) {
+      dispatch(setNotification({ message: error.response.data.error, type: 'error' }, 5));
+    }
+  };
+};
+
 export default blogSlice.reducer;
