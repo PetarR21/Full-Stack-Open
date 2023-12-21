@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { initializeBlogs } from '../reducers/blogs';
 import { Link } from 'react-router-dom';
+import { ListGroup } from 'react-bootstrap';
 
 const BlogList = () => {
   const dispatch = useDispatch();
@@ -12,13 +13,13 @@ const BlogList = () => {
   }, []);
 
   return (
-    <div>
+    <ListGroup className='mt-5'>
       {blogs.map((blog) => (
-        <div className='blog' key={blog.id}>
+        <ListGroup.Item key={blog.id}>
           <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-        </div>
+        </ListGroup.Item>
       ))}
-    </div>
+    </ListGroup>
   );
 };
 

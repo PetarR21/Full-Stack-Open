@@ -18,7 +18,7 @@ const App = () => {
     }
   }, []);
 
-  return <div>{user === null ? <LoginForm /> : <HomePage />}</div>;
+  return <div className='app'>{user === null ? <LoginForm /> : <HomePage />}</div>;
 };
 
 export default App;

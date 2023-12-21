@@ -1,40 +1,13 @@
-.notification {
-  background-color: lightslategray;
-  color: white;
-  padding: 16px;
-  font-size: 18px;
-  border-radius: 3px 0 0 3px;
-  margin: 10px 0;
+h1 {
+  margin: 30px 0;
+  text-align: center;
 }
 
-.error {
-  background-color: #f44336;
+.blogForm {
+  max-width: 400px;
 }
 
-.success {
-  background-color: #4caf50;
-}
-
-.blog {
-  padding-top: 10px;
-  padding-left: 2px;
-  border: 1px solid;
-  margin-bottom: 5px;
-}
-
-td {
-  padding-right: 15px;
-}
-
-.menu {
-  padding: 10px 5px;
-  background-color: lightgray;
-}
-
-.menuItem {
-  margin-right: 10px;
-}
-
-.comments {
-  margin-top: 20px;
+.app {
+  max-width: 800px;
+  margin: auto;
 }

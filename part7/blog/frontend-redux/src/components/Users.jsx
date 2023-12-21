@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { initializeUsers } from '../reducers/users';
+import { Table } from 'react-bootstrap';
 
 const Users = () => {
   const users = useSelector((state) => {
@@ -15,8 +16,14 @@ const Users = () => {
 
   return (
     <div>
-      <h3>Users</h3>
-      <table>
+      <h2>Users</h2>
+      <Table striped>
+        <thead>
+          <tr>
+            <th></th>
+            <th>blogs created</th>
+          </tr>
+        </thead>
         <tbody>
           {users.map((user) => {
             if (user.username !== 'root')
@@ -30,7 +37,7 @@ const Users = () => {
               );
           })}
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 };

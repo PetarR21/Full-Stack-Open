@@ -12,7 +12,7 @@ const HomePage = () => {
   return (
     <div>
       <NavigationMenu />
-      <h2>blogs</h2>
+      <h1>Blog App</h1>
       <Notification />
       <Routes>
         <Route path='/' element={<Blogs />} />
