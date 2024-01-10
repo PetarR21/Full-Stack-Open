@@ -4,7 +4,33 @@ import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries';
 
 const NewBook = (props) => {
   const [createBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    onCompleted: () => {
+      props.setPage('books');
+    },
+    refetchQueries: [{ query: ALL_BOOKS, variables: { genre: null } }, { query: ALL_AUTHORS }],
+    update: (cache, response) => {
+      const addedBook = response.data.addBook;
+
+      const uniqByTitle = (a) => {
+        let seen = new Set();
+        return a.filter((item) => {
+          let k = item.title;
+          return seen.has(k) ? false : seen.add(k);
+        });
+      };
+
+      const genres = addedBook.genres.filter((genre) => {
+        return cache.readQuery({ query: ALL_BOOKS, variables: { genre } });
+      });
+
+      genres.forEach((genre) => {
+        cache.updateQuery({ query: ALL_BOOKS, variables: { genre } }, ({ allBooks }) => {
+          return {
+            allBooks: uniqByTitle(allBooks.concat(addedBook)),
+          };
+        });
+      });
+    },
   });
 
   const [title, setTitle] = useState('');
