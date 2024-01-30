@@ -1,6 +1,6 @@
 type BMIResult = 'Normal (healthy weight)' | 'Overweight' | 'Obese';
 
-interface BMIValues {
+/*interface BMIValues {
   height: number;
   weight: number;
 }
@@ -17,7 +17,7 @@ const parseArguments = (args: string[]): BMIValues => {
   } else {
     throw new Error('Provided values were not numbers.');
   }
-};
+};*/
 
 const calculateBmi = (height: number, weight: number): BMIResult => {
   const bmi = weight / (height * height);
@@ -35,13 +35,4 @@ const calculateBmi = (height: number, weight: number): BMIResult => {
   }
 };
 
-try {
-  const { height, weight } = parseArguments(process.argv);
-  console.log(calculateBmi(height, weight));
-} catch (error) {
-  let errorMessage = 'Something bad happened.';
-  if (error instanceof Error) {
-    errorMessage += ' Error: ' + error.message;
-  }
-  console.log(errorMessage);
-}
+export default calculateBmi;

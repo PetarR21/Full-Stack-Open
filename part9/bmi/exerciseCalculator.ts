@@ -8,7 +8,7 @@ interface ExerciseResult {
   average: number;
 }
 
-interface ExerciseValues {
+/*interface ExerciseValues {
   target: number;
   dailyExerciseHours: number[];
 }
@@ -36,7 +36,7 @@ const parseArgumentsExercise = (args: string[]): ExerciseValues => {
     target,
     dailyExerciseHours,
   };
-};
+};*/
 
 const calculateExercises = (dailyExerciseHours: number[], target: number): ExerciseResult => {
   const periodLength = dailyExerciseHours.length;
@@ -59,13 +59,4 @@ const calculateExercises = (dailyExerciseHours: number[], target: number): Exerc
   };
 };
 
-try {
-  const { target, dailyExerciseHours } = parseArgumentsExercise(process.argv);
-  console.log(calculateExercises(dailyExerciseHours, target));
-} catch (error) {
-  let errorMessage = 'Something went wrong.';
-  if (error instanceof Error) {
-    errorMessage += ' Error: ' + error.message;
-  }
-  console.log(errorMessage);
-}
+export default calculateExercises;
